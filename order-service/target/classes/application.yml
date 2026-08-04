@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: order-service
+  profiles:
+    active: local
+
+server:
+  port: 8082
+  shutdown: graceful
+
+# Externalized Product Service URL configuration
+product-service:
+  base-url: ${PRODUCT_SERVICE_URL:http://localhost:8081}
+  timeout:
+    connect-ms: 5000
+    read-ms: 5000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha

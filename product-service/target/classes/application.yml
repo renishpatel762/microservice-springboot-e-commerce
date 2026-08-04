@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: product-service
+  profiles:
+    active: local
+
+server:
+  port: 8081
+  shutdown: graceful
+
+# Graceful Shutdown
+# Why it exists: Allows ongoing requests to complete before terminating the application container.
+# Avoids dropping connections abruptly during deployments or autoscale scale-downs.
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
