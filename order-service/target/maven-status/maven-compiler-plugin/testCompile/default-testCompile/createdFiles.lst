@@ -1,0 +1,4 @@
+com\ecommerce\order\security\OrderSecurityTest.class
+com\ecommerce\order\service\OrderServiceImplTest.class
+com\ecommerce\order\controller\OrderControllerTest.class
+com\ecommerce\order\OrderIntegrationTest.class

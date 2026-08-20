@@ -1,0 +1,4 @@
+com\ecommerce\product\controller\ProductControllerTest.class
+com\ecommerce\product\security\ProductSecurityTest.class
+com\ecommerce\product\ProductIntegrationTest.class
+com\ecommerce\product\service\ProductServiceImplTest.class

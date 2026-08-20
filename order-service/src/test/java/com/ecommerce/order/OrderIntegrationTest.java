@@ -62,9 +62,15 @@ class OrderIntegrationTest {
     @MockBean
     private ProductServiceClient productServiceClient;
 
+    @Autowired
+    private com.ecommerce.order.security.JwtService jwtService;
+
+    private String authToken;
+
     @BeforeEach
     void setUp() {
         orderRepository.deleteAll();
+        authToken = "Bearer " + jwtService.generateToken("bob@example.com", "ROLE_USER");
     }
 
     @Test
@@ -88,6 +94,7 @@ class OrderIntegrationTest {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", authToken);
         HttpEntity<OrderCreateRequestRecord> requestEntity = new HttpEntity<>(createRequest, headers);
 
         ResponseEntity<OrderResponseRecord> responseEntity = restTemplate.postForEntity(

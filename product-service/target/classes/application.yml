@@ -8,6 +8,9 @@ server:
   port: 8081
   shutdown: graceful
 
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+
 # Graceful Shutdown
 # Why it exists: Allows ongoing requests to complete before terminating the application container.
 # Avoids dropping connections abruptly during deployments or autoscale scale-downs.

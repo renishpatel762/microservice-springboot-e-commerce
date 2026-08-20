@@ -14,6 +14,9 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -26,9 +29,9 @@ import java.util.concurrent.TimeUnit;
  *    - WebClient provides a functional, fluent API supporting both synchronous and asynchronous calls.
  *    - Built-in HTTP client engine (Netty/Reactor) with fine-grained connection pooling, read/write timeout control.
  *
- * 2. CORRELATION ID PROPAGATION:
- *    The `logCorrelationIdFilter` ExchangeFilterFunction extracts the active MDC `correlationId` from the current
- *    calling thread and injects `X-Correlation-ID` header into outgoing HTTP requests to Product Service.
+ * 2. CORRELATION ID & AUTH PROPAGATION:
+ *    The ExchangeFilterFunction extracts the active MDC `correlationId` and incoming `Authorization` Bearer token
+ *    from the calling request and injects them into outgoing HTTP requests to Product Service.
  * ===================================================================================
  */
 @Configuration
@@ -55,20 +58,29 @@ public class WebClientConfig {
         return WebClient.builder()
                 .baseUrl(productServiceBaseUrl)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .filter(correlationIdForwardingFilter())
+                .filter(headerForwardingFilter())
                 .build();
     }
 
-    private ExchangeFilterFunction correlationIdForwardingFilter() {
+    private ExchangeFilterFunction headerForwardingFilter() {
         return (request, next) -> {
+            ClientRequest.Builder builder = ClientRequest.from(request);
+
             String correlationId = MDC.get(CorrelationIdFilter.CORRELATION_ID_MDC_KEY);
             if (correlationId != null && !correlationId.isBlank()) {
-                ClientRequest filteredRequest = ClientRequest.from(request)
-                        .header(CorrelationIdFilter.CORRELATION_ID_HEADER, correlationId)
-                        .build();
-                return next.exchange(filteredRequest);
+                builder.header(CorrelationIdFilter.CORRELATION_ID_HEADER, correlationId);
             }
-            return next.exchange(request);
+
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                HttpServletRequest servletRequest = attributes.getRequest();
+                String authHeader = servletRequest.getHeader("Authorization");
+                if (authHeader != null && !authHeader.isBlank()) {
+                    builder.header("Authorization", authHeader);
+                }
+            }
+
+            return next.exchange(builder.build());
         };
     }
 }

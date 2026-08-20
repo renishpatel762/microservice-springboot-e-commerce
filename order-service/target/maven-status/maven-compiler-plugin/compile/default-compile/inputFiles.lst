@@ -2,6 +2,7 @@ D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\co
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\client\ProductServiceClientImpl.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\client\WebClientConfig.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\config\OpenApiConfig.java
+D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\config\SecurityConfig.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\controller\OrderController.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\dto\ErrorResponseRecord.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\dto\OrderCreateRequestRecord.java
@@ -27,5 +28,7 @@ D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\co
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\OrderServiceApplication.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\repository\OrderRepository.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\repository\OrderSpecification.java
+D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\security\JwtAuthenticationFilter.java
+D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\security\JwtService.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\service\OrderService.java
 D:\dev\project\microservice-springboot-e-commerce\order-service\src\main\java\com\ecommerce\order\service\OrderServiceImpl.java

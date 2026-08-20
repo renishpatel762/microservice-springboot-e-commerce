@@ -1,4 +1,5 @@
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\config\OpenApiConfig.java
+D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\config\SecurityConfig.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\controller\ProductController.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\dto\ErrorResponseRecord.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\dto\PagedResponseRecord.java
@@ -17,5 +18,7 @@ D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\ProductServiceApplication.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\repository\ProductRepository.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\repository\ProductSpecification.java
+D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\security\JwtAuthenticationFilter.java
+D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\security\JwtService.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\service\ProductService.java
 D:\dev\project\microservice-springboot-e-commerce\product-service\src\main\java\com\ecommerce\product\service\ProductServiceImpl.java

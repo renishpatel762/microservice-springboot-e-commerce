@@ -1,8 +1,11 @@
 package com.ecommerce.product.controller;
 
+import com.ecommerce.product.config.SecurityConfig;
 import com.ecommerce.product.dto.ProductRequestRecord;
 import com.ecommerce.product.dto.ProductResponseRecord;
 import com.ecommerce.product.exception.ProductNotFoundException;
+import com.ecommerce.product.security.JwtAuthenticationFilter;
+import com.ecommerce.product.security.JwtService;
 import com.ecommerce.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -18,6 +23,7 @@ import java.time.Instant;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -25,7 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
+@Import({SecurityConfig.class, JwtAuthenticationFilter.class})
+@WithMockUser
 class ProductControllerTest {
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,6 +72,7 @@ class ProductControllerTest {
         when(productService.createProduct(any(ProductRequestRecord.class))).thenReturn(responseRecord);
 
         mockMvc.perform(post("/api/v1/products")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestRecord)))
                 .andExpect(status().isCreated())
@@ -82,6 +94,7 @@ class ProductControllerTest {
         );
 
         mockMvc.perform(post("/api/v1/products")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest())

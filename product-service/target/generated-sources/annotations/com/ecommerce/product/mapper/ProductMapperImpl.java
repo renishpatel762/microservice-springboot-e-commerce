@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-08-03T22:23:49+0530",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.46.100.v20260624-0231, environment: Java 21.0.11 (Eclipse Adoptium)"
+    date = "2026-08-18T21:57:45+0530",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.5 (Oracle Corporation)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
@@ -24,11 +24,11 @@ public class ProductMapperImpl implements ProductMapper {
 
         Product.ProductBuilder product = Product.builder();
 
-        product.category( requestRecord.category() );
-        product.description( requestRecord.description() );
         product.name( requestRecord.name() );
+        product.description( requestRecord.description() );
         product.price( requestRecord.price() );
         product.stock( requestRecord.stock() );
+        product.category( requestRecord.category() );
 
         return product.build();
     }
@@ -68,20 +68,20 @@ public class ProductMapperImpl implements ProductMapper {
             return;
         }
 
-        if ( requestRecord.category() != null ) {
-            targetEntity.setCategory( requestRecord.category() );
+        if ( requestRecord.name() != null ) {
+            targetEntity.setName( requestRecord.name() );
         }
         if ( requestRecord.description() != null ) {
             targetEntity.setDescription( requestRecord.description() );
-        }
-        if ( requestRecord.name() != null ) {
-            targetEntity.setName( requestRecord.name() );
         }
         if ( requestRecord.price() != null ) {
             targetEntity.setPrice( requestRecord.price() );
         }
         if ( requestRecord.stock() != null ) {
             targetEntity.setStock( requestRecord.stock() );
+        }
+        if ( requestRecord.category() != null ) {
+            targetEntity.setCategory( requestRecord.category() );
         }
     }
 }

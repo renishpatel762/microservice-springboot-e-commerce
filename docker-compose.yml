@@ -2,6 +2,28 @@ version: '3.8'
 
 services:
   # ===================================================================================
+  # AUTH DATABASE (PostgreSQL)
+  # ===================================================================================
+  auth-db:
+    image: postgres:16-alpine
+    container_name: auth-db
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
+
+  # ===================================================================================
   # PRODUCT DATABASE (PostgreSQL)
   # ===================================================================================
   product-db:
@@ -46,6 +68,34 @@ services:
       - ecommerce-net
 
   # ===================================================================================
+  # AUTH MICROSERVICE
+  # ===================================================================================
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: auth-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8083/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - ecommerce-net
+
+  # ===================================================================================
   # PRODUCT MICROSERVICE
   # ===================================================================================
   product-service:
@@ -60,6 +110,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://product-db:5432/product_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     depends_on:
       product-db:
         condition: service_healthy
@@ -88,6 +139,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       PRODUCT_SERVICE_URL: http://product-service:8081
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     depends_on:
       order-db:
         condition: service_healthy
@@ -103,6 +155,8 @@ services:
       - ecommerce-net
 
 volumes:
+  auth_db_data:
+    driver: local
   product_db_data:
     driver: local
   order_db_data:

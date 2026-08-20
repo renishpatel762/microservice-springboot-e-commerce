@@ -55,9 +55,15 @@ class ProductIntegrationTest {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private com.ecommerce.product.security.JwtService jwtService;
+
+    private String authToken;
+
     @BeforeEach
     void setUp() {
         productRepository.deleteAll();
+        authToken = "Bearer " + jwtService.generateToken("admin@example.com", "ROLE_ADMIN");
     }
 
     @Test
@@ -74,6 +80,7 @@ class ProductIntegrationTest {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", authToken);
         HttpEntity<ProductRequestRecord> requestEntity = new HttpEntity<>(createRequest, headers);
 
         ResponseEntity<ProductResponseRecord> createResponse = restTemplate.postForEntity(
@@ -86,8 +93,9 @@ class ProductIntegrationTest {
         assertThat(createResponse.getBody().name()).isEqualTo("4K Monitor");
 
         // 2. Fetch Created Product by ID
-        ResponseEntity<ProductResponseRecord> getResponse = restTemplate.getForEntity(
-                "/api/v1/products/" + createdId, ProductResponseRecord.class);
+        HttpEntity<Void> authEntity = new HttpEntity<>(headers);
+        ResponseEntity<ProductResponseRecord> getResponse = restTemplate.exchange(
+                "/api/v1/products/" + createdId, HttpMethod.GET, authEntity, ProductResponseRecord.class);
 
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(getResponse.getBody()).isNotNull();
@@ -95,13 +103,13 @@ class ProductIntegrationTest {
 
         // 3. Delete Product
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
-                "/api/v1/products/" + createdId, HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
+                "/api/v1/products/" + createdId, HttpMethod.DELETE, authEntity, Void.class);
 
         assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         // 4. Confirm Deletion (Expect 404)
-        ResponseEntity<String> getDeletedResponse = restTemplate.getForEntity(
-                "/api/v1/products/" + createdId, String.class);
+        ResponseEntity<String> getDeletedResponse = restTemplate.exchange(
+                "/api/v1/products/" + createdId, HttpMethod.GET, authEntity, String.class);
 
         assertThat(getDeletedResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
